@@ -1,93 +1,119 @@
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 
 const checkPath = (route) => {
-    return new Promise((resolve, reject) => {
-        const pathExist = fs.existsSync(route); // identificar si la ruta existe.
-        if (pathExist) {
-            resolve(route)
-        } else {// si no existe la ruta es reject, rechaza la promesa
-            reject('La ruta no existe')
-        }
-    });
+  return new Promise((resolve, reject) => {
+    const pathExist = fs.existsSync(route);
+    if (pathExist) {
+      resolve(route);
+    } else {
+      reject('La ruta no existe');
+    }
+  });
 };
 
-//Revisar si la ruta es absoluta o relativa 
 const itsAbsolute = (route) => {
-    return new Promise((resolve, reject) => {
-        const routeAbsolute = path.isAbsolute(route);
-        if (!routeAbsolute){
-        const routeConvertAbsolute = path.resolve(route);
-        resolve(routeConvertAbsolute);
-        }
-        resolve(route);
-    });
+  return new Promise((resolve, reject) => {
+    const routeAbsolute = path.isAbsolute(route);
+    if (!routeAbsolute) {
+      const routeConvertAbsolute = path.resolve(route);
+      resolve(routeConvertAbsolute);
+    }
+    resolve(route);
+  });
 };
 
-//convertir a absoluta
 const convertAbsolute = (route) => {
-    return new Promise((resolve) => {
-        const routeConvertAbsolute = path.resolve(route);
-        resolve(routeConvertAbsolute);
-    });
+  return new Promise((resolve) => {
+    const routeConvertAbsolute = path.resolve(route);
+    resolve(routeConvertAbsolute);
+  });
 };
-// revisar si es archivo o directorio
+
 const verifyRouteType = (route) => {
   return new Promise((resolve, reject) => {
-      fs.stat(route, (error, stats) => {
-          if (error) {
-              reject(error);
-              return;
-          }
-          if (stats.isFile()) {
-              resolve('archivo.');
-          } else if (stats.isDirectory()) {
-              resolve('directorio');
-          } else {
-              reject('La ruta no es ni un archivo ni un directorio')
-          }
-      });
+    fs.stat(route, (error, stats) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      if (stats.isFile()) {
+        resolve('archivo');
+      } else if (stats.isDirectory()) {
+        resolve('directorio');
+      } else {
+        reject('La ruta no es ni un archivo ni un directorio');
+      }
+    });
   });
-}
-// revisar si es un archivo .md
+};
+
 const extensionCheck = (route) => {
   return new Promise((resolve, reject) => {
-      const extension = path.extname(route);
-      resolve(extension === '.md');
+    const extension = path.extname(route);
+    resolve(extension === '.md');
   });
-}
-//Leer archivos
+};
+
 const readMD = (route) => {
   return new Promise((resolve, reject) => {
-      fs.readFile(route, 'utf-8', (error, datos) => {
-          if(error) {
-              reject(error);
-          } else {
-              resolve(datos);
-          }
-      });
+    fs.readFile(route, 'utf-8', (error, datos) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(datos);
+      }
+    });
   });
 };
 
-//Extraer links de los archivos
 const extractLinks = (content, filePath) => {
   return new Promise((resolve, reject) => {
-      const regExtract = /\[([^\]]+)\]\(([^\)]+)\)/g;
-      const links = [];
-      let match;
+    const regExtract = /\[([^\]]+)\]\(([^\)]+)\)/g;
+    const links = [];
+    let match;
 
-  while ((match = regExtract.exec(content)) !== null) {
+    while ((match = regExtract.exec(content)) !== null) {
       const text = match[1];
       const URL = match[2];
-      links.push({ href: URL, text: text, file: filePath});
-  }
-  if (links.length > 0){
+      links.push({ href: URL, text: text, file: filePath });
+    }
+
+    if (links.length > 0) {
       resolve(links);
-  }else {
-      reject(new Error('No se encontraron enlaces'))
-  }
+    } else {
+      reject(new Error('No se encontraron enlaces'));
+    }
   });
 };
+
+const validateLinks = (links) => {
+    const linkPromises = links.map(link => {
+      return axios.get(link.href)
+        .then(response => {
+          return {
+            href: link.href,
+            text: link.text,
+            file: link.file,
+            status: response.status,
+            ok: response.statusText
+          };
+        })
+        .catch(error => {
+          return {
+            href: link.href,
+            text: link.text,
+            file: link.file,
+            status: error.response ? error.response.status : null,
+            ok: 'fail'
+          };
+        });
+    });
+  
+    return Promise.all(linkPromises);
+  };
+  
 
 module.exports = {
   checkPath,
@@ -97,4 +123,5 @@ module.exports = {
   extensionCheck,
   readMD,
   extractLinks,
+  validateLinks
 };

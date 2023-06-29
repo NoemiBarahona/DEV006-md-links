@@ -5,7 +5,8 @@ const {
   verifyRouteType,
   extensionCheck,
   readMD,
-  extractLinks
+  extractLinks,
+  validateLinks
 } = require('./functions.js');
 
 const mdLinks = (path, options) => {
@@ -24,28 +25,53 @@ const mdLinks = (path, options) => {
         if (!isMD) {
           throw new Error('La extensión del archivo no es .md');
         }
+        return verifyRouteType(path);
+      })
+      .then((routeType) => {
+        console.log('Tipo de ruta:', routeType);
+
         return readMD(path);
       })
       .then((data) => {
-        const resultLinks = extractLinks(data, filepath); // Utilizar la variable global filepath
-        return resolve(resultLinks);
+        const resultLinks = extractLinks(data, filepath);
+
+        if (options && options.validate) {
+          return validateLinks(resultLinks)
+            .then((validatedLinks) => {
+              return validatedLinks;
+            })
+            .catch((error) => {
+              console.error('Error en la validación de los enlaces:', error);
+              return resultLinks;
+            });
+        } else {
+          return resultLinks;
+        }
+      })
+      .then((links) => {
+        return resolve(links);
       })
       .catch((error) => {
         console.error(error);
-        return reject("Esto está fallando");
+        return reject('Esto está fallando');
       });
   });
 };
 
+const path = 'C:\\Users\\slcan\\MDL\\README.md';
+const options = { validate: true };
 
-const resultado = mdLinks('C:\\Users\\slcan\\MDL\\README.md');
-
-resultado.then((data) => {
-  console.log("Data", data);
-}).catch((error) => {
-  console.log("error", error);
-});
-
+mdLinks(path, options)
+  .then((data) => {
+    if (Array.isArray(data)) {
+      console.log('Data', data);
+    } else {
+      console.log('Error: El resultado no es un arreglo');
+    }
+  })
+  .catch((error) => {
+    console.log('error', error);
+  });
 
 // checkPath('src/functions.js')
 //   .then(() => {
