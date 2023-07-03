@@ -69,8 +69,7 @@ const readMD = (route) => {
 };
 
 const extractLinks = (content, filePath) => {
-  return new Promise((resolve, reject) => {
-    const regExtract = /\[([^\]]+)\]\(([^\)]+)\)/g;
+    const regExtract =  /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
     const links = [];
     let match;
 
@@ -79,13 +78,7 @@ const extractLinks = (content, filePath) => {
       const URL = match[2];
       links.push({ href: URL, text: text, file: filePath });
     }
-
-    if (links.length > 0) {
-      resolve(links);
-    } else {
-      reject(new Error('No se encontraron enlaces'));
-    }
-  });
+ return links;
 };
 
 const validateLinks = (links) => {

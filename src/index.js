@@ -34,6 +34,7 @@ const mdLinks = (path, options) => {
       })
       .then((data) => {
         const resultLinks = extractLinks(data, filepath);
+  
 
         if (options && options.validate) {
           return validateLinks(resultLinks)
@@ -59,7 +60,7 @@ const mdLinks = (path, options) => {
 };
 
 const path = 'C:\\Users\\slcan\\MDL\\README.md';
-const options = { validate: true };
+const options = { validate: false };
 
 mdLinks(path, options)
   .then((data) => {
@@ -70,8 +71,8 @@ mdLinks(path, options)
     }
   })
   .catch((error) => {
-    console.log('error', error);
-  });
+    console.log('error', error);
+  });
 
 // checkPath('src/functions.js')
 //   .then(() => {
