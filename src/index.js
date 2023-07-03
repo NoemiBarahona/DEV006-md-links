@@ -28,14 +28,12 @@ const mdLinks = (path, options) => {
         return verifyRouteType(path);
       })
       .then((routeType) => {
-        console.log('Tipo de ruta:', routeType);
+        // console.log('Tipo de ruta:', routeType);
 
         return readMD(path);
       })
       .then((data) => {
         const resultLinks = extractLinks(data, filepath);
-  
-
         if (options && options.validate) {
           return validateLinks(resultLinks)
             .then((validatedLinks) => {
@@ -59,8 +57,8 @@ const mdLinks = (path, options) => {
   });
 };
 
-const path = 'C:\\Users\\slcan\\MDL\\README.md';
-const options = { validate: false };
+const path = 'C:\\Users\\slcan\\MDL\\test\\prueba.md';
+const options = { validate: true };
 
 mdLinks(path, options)
   .then((data) => {
@@ -74,6 +72,9 @@ mdLinks(path, options)
     console.log('error', error);
   });
 
+module.exports = {
+  mdLinks,
+};
 // checkPath('src/functions.js')
 //   .then(() => {
 //     // La promesa se resolvió correctamente, no es necesario mostrar nuevamente en consola
@@ -138,6 +139,3 @@ mdLinks(path, options)
 //     console.error('Error al verificar el archivo', error);
 //   });
 
-module.exports = {
-  mdLinks,
-};
