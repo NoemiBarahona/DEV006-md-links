@@ -58,7 +58,7 @@ const mdLinks = (path, options) => {
 };
 
 const path = 'C:\\Users\\slcan\\MDL\\test\\prueba.md';
-const options = { validate: true };
+const options = { validate: false };
 
 mdLinks(path, options)
   .then((data) => {

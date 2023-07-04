@@ -35,19 +35,19 @@ const verifyRouteType = (route) => {
   return new Promise((resolve, reject) => {
     fs.stat(route, (error, stats) => {
       if (error) {
-        reject(error);
+        reject(new Error('La ruta no es ni un archivo ni un directorio'));
         return;
       }
       if (stats.isFile()) {
         resolve('archivo');
       } else if (stats.isDirectory()) {
         resolve('directorio');
-      } else {
-        reject('La ruta no es ni un archivo ni un directorio');
       }
     });
   });
 };
+
+
 
 const extensionCheck = (route) => {
   return new Promise((resolve, reject) => {
