@@ -29,7 +29,6 @@ const mdLinks = (path, options) => {
       })
       .then((routeType) => {
         // console.log('Tipo de ruta:', routeType);
-
         return readMD(path);
       })
       .then((data) => {
@@ -58,7 +57,7 @@ const mdLinks = (path, options) => {
 };
 
 const path = 'C:\\Users\\slcan\\MDL\\test\\prueba.md';
-const options = { validate: false };
+const options = { validate: true };
 
 mdLinks(path, options)
   .then((data) => {

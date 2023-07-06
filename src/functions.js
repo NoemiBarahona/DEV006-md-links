@@ -47,8 +47,6 @@ const verifyRouteType = (route) => {
   });
 };
 
-
-
 const extensionCheck = (route) => {
   return new Promise((resolve, reject) => {
     const extension = path.extname(route);
@@ -106,7 +104,6 @@ const validateLinks = (links) => {
   
     return Promise.all(linkPromises);
   };
-  
 
 module.exports = {
   checkPath,
