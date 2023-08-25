@@ -76,8 +76,7 @@ mdLinks(path, options)
 ```
 
 #### Ejemplo 2: Obtener enlaces con validación
-```
-javascript
+```javascript
 const path = "ruta/al/archivo.md";
 const options = { validate: true };
 
