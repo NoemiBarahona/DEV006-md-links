@@ -16,13 +16,13 @@ npm install md-links
 
 Para utilizar `mdLinks` en tu código, primero debes importarlo:
 
-javascript
+```javascript
 const { mdLinks } = require("md-links");
-
+```
 
 Luego, puedes llamar a la función mdLinks proporcionando la ruta de un archivo Markdown como argumento. También puedes incluir opciones adicionales, como la validación de los enlaces. La función retornará una promesa que se resolverá con un arreglo de objetos que representan los enlaces encontrados en el archivo.
 
-javascript
+```javascript
 const path = "ruta/al/archivo.md";
 const options = { validate: true };
 
@@ -33,15 +33,15 @@ mdLinks(path, options)
   .catch((error) => {
     console.error(error);
   });
-
+```
 
 ### Como línea de comandos
 
 `mdLinks` también puede ser utilizado desde la línea de comandos. Puedes ejecutarlo en tu terminal de la siguiente manera:
 
-bash
+```bash
 md-links ruta/al/archivo.md --validate
-
+```
 
 Esto analizará el archivo Markdown en la ruta especificada y mostrará los enlaces encontrados junto con su estado de validación.
 
@@ -62,7 +62,7 @@ La función devuelve una promesa que se resolverá con un arreglo de objetos. Ca
 
 #### Ejemplo 1: Obtener enlaces sin validación
 
-javascript
+```javascript
 const path = "ruta/al/archivo.md";
 const options = { validate: false };
 
@@ -73,10 +73,10 @@ mdLinks(path, options)
   .catch((error) => {
     console.error(error);
   });
-
+```
 
 #### Ejemplo 2: Obtener enlaces con validación
-
+```
 javascript
 const path = "ruta/al/archivo.md";
 const options = { validate: true };
@@ -88,3 +88,4 @@ mdLinks(path, options)
   .catch((error) => {
     console.error(error);
   });
+```
